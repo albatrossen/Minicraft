@@ -8,6 +8,31 @@ Feel free to either ignore my warning or trust me when I say I'll do nothing har
 
 [Download](http://elera.dk/download/minicraft_qt.exe) (26MB because it bundles python and qt)
 
+##Known problems and lacking features
+ * No copy paste form the chat log window (in linux you can select text and middle click tho)
+ * No history for entered commands
+ * ``/p `` will not be sent to the server (only p - I use it for debugging atm)
+ * No tab completion
+ * No clicking on links in the chat
+
+##Roadmap
+ * 1.1
+   * sound when someone mentions your name
+   * Link highlight
+   * copy/paste from chatlog
+ * 1.2
+   * tab completion
+   * command history
+ * 1.5
+   * Support for FTB
+   * Save log to file option
+ * 2.0
+   * Channels in tabs
+ * ??
+   * Minimize to tray
+   * UrWid Console UI
+   * XMPP gateway
+
 ##Building or running from source
 I personally used 32bit python 2.7.3 for this build. and it should just be a matter of running ``python setup.py py2exe``
 
