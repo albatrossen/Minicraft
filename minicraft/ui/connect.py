@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'connect.ui'
 #
-# Created: Sun Feb 10 22:12:45 2013
+# Created: Mon Feb 11 20:02:09 2013
 #      by: PyQt4 UI code generator 4.9.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,7 +17,7 @@ except AttributeError:
 class Ui_ConnectWindow(object):
     def setupUi(self, ConnectWindow):
         ConnectWindow.setObjectName(_fromUtf8("ConnectWindow"))
-        ConnectWindow.resize(216, 137)
+        ConnectWindow.resize(216, 158)
         self.verticalLayout = QtGui.QVBoxLayout(ConnectWindow)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.formLayout = QtGui.QFormLayout()
@@ -27,6 +27,7 @@ class Ui_ConnectWindow(object):
         self.l_servername.setObjectName(_fromUtf8("l_servername"))
         self.formLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.l_servername)
         self.servername = QtGui.QLineEdit(ConnectWindow)
+        self.servername.setText(_fromUtf8("damnation.eu"))
         self.servername.setObjectName(_fromUtf8("servername"))
         self.formLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.servername)
         self.l_username = QtGui.QLabel(ConnectWindow)
