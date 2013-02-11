@@ -62,7 +62,6 @@ class MineCraftConnection(object):
 
 	def start_session(self,session,host,port=25565):
 		self.session = session
-		print(repr(self.session.username),repr(host),repr(port))
 		self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.socket.connect((host,port))
 		self.stream = self.socket.makefile("r")		
