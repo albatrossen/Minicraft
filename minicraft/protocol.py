@@ -86,6 +86,7 @@ class MineCraftConnection(object):
 		while data:
 			data = self.stream.read(1)
 			if not data:
+				self.onDisconnect(packets.Disconnect("Connection Lost"))
 				return
 			id = struct.unpack("!B",data)[0]
 			if id in packets.PacketRegistry.types:
