@@ -23,6 +23,10 @@ Feel free to either ignore my warning or trust me when I say I'll do nothing har
  * 1.2
    * tab completion
    * command history
+ * 1.3
+   * Hide password in a different way
+   * Show a nice player list.
+   * Better handling of connect issues
  * 1.5
    * Support for FTB
    * Save log to file option
@@ -32,6 +36,8 @@ Feel free to either ignore my warning or trust me when I say I'll do nothing har
    * Minimize to tray
    * UrWid Console UI
    * XMPP gateway
+   * Multiserver support
+   * Macro support
 
 ##Building or running from source
 I personally used 32bit python 2.7.3 for this build. and it should just be a matter of running ``python setup.py py2exe``
