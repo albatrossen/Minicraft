@@ -28,6 +28,7 @@ Feel free to either ignore my warning or trust me when I say I'll do nothing har
    * Better handling of connect issues
    * Limit log length in chat log
    * Show a nice player list.
+   * Handle port number in connect dialog
  * 1.5
    * Support for FTB
    * Save log to file option
