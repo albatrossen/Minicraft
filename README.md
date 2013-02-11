@@ -25,8 +25,9 @@ Feel free to either ignore my warning or trust me when I say I'll do nothing har
    * command history
  * 1.3
    * Hide password in a different way
-   * Show a nice player list.
    * Better handling of connect issues
+   * Limit log length in chat log
+   * Show a nice player list.
  * 1.5
    * Support for FTB
    * Save log to file option
