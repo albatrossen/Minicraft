@@ -1,5 +1,5 @@
 # coding=utf8
-import getpass, time, re
+import getpass, time, re, sys, os
 import ConfigParser
 
 from PyQt4 import QtCore, QtGui
@@ -39,12 +39,14 @@ class MainWindow(QtGui.QMainWindow):
 class LoginWindow(QtGui.QDialog):
 	connecting = False
 	session_ready = QtCore.pyqtSignal(Session,str)
+	config_filename = os.path.join(os.path.dirname(sys.argv[0]),'minicraft.cfg')
+
 	def __init__(self,parent=None):
 		QtGui.QWidget.__init__(self, parent)
 		self.ui = Ui_ConnectWindow()
 		self.ui.setupUi(self)
 		self.config = ConfigParser.RawConfigParser()
-		self.config.read('minicraft.cfg')
+		self.config.read(self.config_filename)
 		try:
 			username = self.config.get('Minicraft','username')
 			server = self.config.get('Minicraft','server')
@@ -74,7 +76,7 @@ class LoginWindow(QtGui.QDialog):
 		self.config.set('Minicraft','server',server)
 		self.config.set('Minicraft','username',session.username)
 		keyring.set_password("Minicraft",session.username.encode('utf8'),self.thread.password.encode('utf8'))
-		with open('minicraft.cfg', 'wb') as configfile:
+		with open(self.config_filename, 'wb') as configfile:
 		    self.config.write(configfile)
 		self.close()
 		self.session_ready.emit(session,server)
