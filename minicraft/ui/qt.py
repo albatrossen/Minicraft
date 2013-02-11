@@ -1,3 +1,4 @@
+# coding=utf8
 import getpass, time, re
 import ConfigParser
 
@@ -106,6 +107,8 @@ class QtConnection(QtCore.QThread,MineCraftConnection):
 		self.recv()
 	def onChatMessage(self,packet):
 		self.chatmessage.emit(packet.message)
+	def onDisconnect(self,packet):
+		self.chatmessage.emit(u"§7Disconnected: §c" + packet.reason)
 	def send_message(self,msg):
 		self.send(ChatMessage(unicode(msg[:100])))
 
