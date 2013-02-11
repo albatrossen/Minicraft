@@ -498,4 +498,4 @@ class EncryptionKeyRequest(Packet):
 
 class Disconnect(Packet):
 	id = 0xFF
-	window_id = String()
+	reason = String()
