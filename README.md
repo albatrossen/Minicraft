@@ -29,6 +29,7 @@ Feel free to either ignore my warning or trust me when I say I'll do nothing har
    * Limit log length in chat log
    * Show a nice player list.
    * Handle port number in connect dialog
+   * Add icon to the main window
  * 1.5
    * Support for FTB
    * Save log to file option
