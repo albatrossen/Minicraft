@@ -14,7 +14,7 @@ Feel free to either ignore my warning or trust me when I say I'll do nothing har
  * ``/p `` will not be sent to the server (only p - I use it for debugging atm)
  * No tab completion
  * No clicking on links in the chat
- * The application has failed to start because the application configuration is incorrect -> Install [vcredist_x86.exe](http://www.microsoft.com/en-us/download/details.aspx?id=5555)
+ * The application has failed to start because the application configuration is incorrect -> Install [vcredist_x86.exe](http://www.microsoft.com/en-us/download/details.aspx?id=29)
 
 ##Roadmap
  * 1.1
