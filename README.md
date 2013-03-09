@@ -18,9 +18,9 @@ Feel free to either ignore my warning or trust me when I say I'll do nothing har
 
 ##Roadmap
  * 1.1
-   * sound when someone mentions your name
-   * Link highlight
-   * copy/paste from chatlog
+   * sound when someone mentions your name [in progress]
+   * Link highlight [in progress]
+   * copy/paste from chatlog [done]
  * 1.2
    * tab completion
    * command history
