@@ -26,6 +26,16 @@ class MainWindow(QtGui.QMainWindow):
 			self.chatmessage.emit(msg)
 			self.ui.inputbox.clear()
 
+	def on_player_list_add(self,player):
+		if not self.ui.playerList.findItems(player,QtCore.Qt.MatchExactly):
+			self.ui.playerList.addItem(player)
+
+	def on_player_list_remove(self,player):
+		for i in range( self.ui.playerList.count() ):
+			if self.ui.playerList.item(i).text() == player:
+				self.ui.playerList.takeItem(i)
+				return
+
 	def on_chatmessage(self,msg):
 		self.ui.chatlog.appendHtml(convert_to_html(unicode(msg)))
 
@@ -33,6 +43,8 @@ class MainWindow(QtGui.QMainWindow):
 		self.connection=QtConnection()
 		self.connection.start_session(session,str(host))
 		self.connection.chatmessage.connect(self.on_chatmessage)
+		self.connection.player_list_add.connect(self.on_player_list_add)
+		self.connection.player_list_remove.connect(self.on_player_list_remove)
 		self.chatmessage.connect(self.connection.send_message)
 		self.connection.start()
 
@@ -103,8 +115,11 @@ class QtConnection(QtCore.QThread,MineCraftConnection):
 	def __init__(self,parent=None):
 		QtCore.QThread.__init__(self,parent)
 		MineCraftConnection.__init__(self)
-	control_matcher = re.compile("\xa7.")
+
 	chatmessage = QtCore.pyqtSignal(unicode)
+	player_list_add = QtCore.pyqtSignal(str)
+	player_list_remove = QtCore.pyqtSignal(str)
+
 	def run(self):
 		self.recv()
 	def onChatMessage(self,packet):
@@ -113,6 +128,11 @@ class QtConnection(QtCore.QThread,MineCraftConnection):
 		self.chatmessage.emit(u"§7Disconnected: §c" + packet.reason)
 	def send_message(self,msg):
 		self.send(ChatMessage(unicode(msg[:100])))
+	def onPlayerListItem(self,packet):
+		if packet.online:
+			self.player_list_add.emit(packet.player_name)
+		else:
+			self.player_list_remove.emit(packet.player_name)
 
 class QtUI():
 	def run(self,*argv):
