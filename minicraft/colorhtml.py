@@ -33,9 +33,12 @@ def grouped(iterable, n):
     "s -> (s0,s1,s2,...sn-1), (sn,sn+1,sn+2,...s2n-1), (s2n,s2n+1,s2n+2,...s3n-1), ..."
     return izip(*[iter(iterable)]*n)
 
+def escape(string):
+	return string.replace("&","&amp;").replace(">","&gt;").replace("<","&lt;")
+
 def convert_to_html(msg):
 	l = splitter.split(msg)
-	r = [l[0]]
+	r = [escape(l[0])]
 	stack = []
 	for style, text in grouped(l[1:],2):
 		if style not in 'klmno':
@@ -45,6 +48,6 @@ def convert_to_html(msg):
 			open, end = styles[style]
 			r.append(open)
 			stack.append(end)
-		r.append(text.replace("&","&amp;").replace(">","&gt;").replace("<","&lt;"))
+		r.append(escape(text))
 	r.extend(reversed(stack))
 	return ''.join(r)
