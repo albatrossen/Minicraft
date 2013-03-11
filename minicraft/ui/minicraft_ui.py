@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'minicraft_ui.ui'
 #
-# Created: Sat Mar  9 20:21:45 2013
+# Created: Sat Mar  9 21:47:47 2013
 #      by: PyQt4 UI code generator 4.9.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,7 +17,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(803, 600)
+        MainWindow.resize(710, 599)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/main/icon.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
@@ -27,6 +27,8 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.verticalLayout = QtGui.QVBoxLayout(self.centralwidget)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
+        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         self.chatlog = QPlainTextLog(self.centralwidget)
         self.chatlog.setFocusPolicy(QtCore.Qt.NoFocus)
         self.chatlog.setStyleSheet(_fromUtf8("QPlainTextEdit {\n"
@@ -37,7 +39,17 @@ class Ui_MainWindow(object):
         self.chatlog.setReadOnly(True)
         self.chatlog.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextSelectableByMouse)
         self.chatlog.setObjectName(_fromUtf8("chatlog"))
-        self.verticalLayout.addWidget(self.chatlog)
+        self.horizontalLayout.addWidget(self.chatlog)
+        self.playerList = QtGui.QListWidget(self.centralwidget)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.playerList.sizePolicy().hasHeightForWidth())
+        self.playerList.setSizePolicy(sizePolicy)
+        self.playerList.setMaximumSize(QtCore.QSize(160, 16777215))
+        self.playerList.setObjectName(_fromUtf8("playerList"))
+        self.horizontalLayout.addWidget(self.playerList)
+        self.verticalLayout.addLayout(self.horizontalLayout)
         self.inputbox = QtGui.QLineEdit(self.centralwidget)
         self.inputbox.setMaxLength(100)
         self.inputbox.setObjectName(_fromUtf8("inputbox"))
