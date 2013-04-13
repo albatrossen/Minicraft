@@ -138,7 +138,7 @@ class PlayerDigging(Packet):
 	id = 0x0E
 	status = Byte()
 	x = Integer()
-	y = Integer()
+	y = Byte()
 	z = Integer()
 	face = Byte()
 
@@ -328,7 +328,7 @@ class BlockAction(Packet):
 	byte1 = Byte()
 	byte2 = Byte()
 	block_id = Short()
-class BlockAction(Packet):
+class BlockBreakAnimation(Packet):
 	id = 0x37
 	entity_id = Integer()
 	x = Integer()
@@ -372,6 +372,17 @@ class NamedSoundEffect(Packet):
 	z = Integer()
 	volume = Float()
 	pitch = Byte()
+class Particle(Packet):
+	id = 0x3F
+	particle_name = String()
+	x = Float()
+	y = Float()
+	z = Float()
+	offset_x = Float()
+	offset_x = Float()
+	offset_x = Float()
+	particle_speed = Float()
+	particle_number = Integer()
 class ChangeGameState(Packet):
 	id = 0x46
 	reason = Byte()
@@ -389,7 +400,8 @@ class OpenWindow(Packet):
 	inventory_type = Byte()
 	window_title = String()
 	number_of_slots = Byte()
-class OpenWindow(Packet):
+	use_provided_window_title = Bool()
+class CloseWindow(Packet):
 	id = 0x65
 	window_id = Byte()
 class ClickWindow(Packet):
@@ -398,7 +410,7 @@ class ClickWindow(Packet):
 	slot = Short()
 	mousebutton = Byte()
 	action_number = Short()
-	shift = Bool()
+	mode = Byte()
 	clicked_item = Slot()
 class SetSlot(Packet):
 	id = 0x67
@@ -421,7 +433,7 @@ class ConfirmTransaction(Packet):
 	action_number = Short()
 	accepted = Bool()
 
-class ConfirmTransaction(Packet):
+class CreativeInventoryAction(Packet):
 	id = 0x6B
 	slot = Short()
 	clicked_item = Slot()
@@ -481,6 +493,49 @@ class ClientSettings(Packet):
 class ClientStatuses(Packet):
 	id = 0xCD
 	payload = Byte()
+class ScoreboardObjective(Packet):
+	id = 0xCE
+	objective_name = String()
+	objective_value = String()
+	create_remove = Byte()
+class UpdateScore(Packet):
+	id = 0xCF
+	item_name = String()
+	update_remove = Byte()
+	score_name = String()
+	value = Integer()
+class DisplayScoreboard(Packet):
+	id = 0xD0
+	position = Byte()
+	score_name = String()
+class Teams(Packet):
+	id = 0xD1
+	team_name = String()
+	mode = Byte()
+	team_display_name = String()
+	team_prefix = String()
+	team_suffix = String()
+	friendly_fire = Byte()
+	player_count = Short()
+	players = None
+	def setFromRawData(self,stream):
+		self.team_name = self.team_name.decode(stream)
+		self.mode = self.mode.decode(stream)
+		if mode == 0 or mode == 2:
+			self.team_display_name = self.team_display_name.decode(stream)
+			self.team_prefix = self.team_prefix.decode(stream)
+			self.team_suffix = self.team_suffix.decode(stream)
+			self.friendly_fire = self.friendly_fire.decode(stream)
+		else:
+			self.team_display_name = None
+			self.team_prefix = None
+			self.team_suffix = None
+			self.friendly_fire = None
+		if mode == 0 or mode == 3 or mode == 4:
+			self.player_count = player_count.decode(stream)
+			s=String()
+			self.players = [s.decode(stream) for i in range(self.player_count)]
+
 class PluginMessage(Packet):
 	id = 0xFA
 	channel = String()
@@ -495,6 +550,10 @@ class EncryptionKeyRequest(Packet):
 	server_id = String()
 	public_key = Bytes()
 	verify_token = Bytes()
+
+class ServerListPing(Packet):
+	id = 0xFE
+	magic = Byte()
 
 class Disconnect(Packet):
 	id = 0xFF
