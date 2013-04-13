@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">
-    <normaloff>:/main/icon.svg</normaloff>:/main/icon.svg</iconset>
+    <normaloff>:/main/icon.ico</normaloff>:/main/icon.ico</iconset>
   </property>
   <property name="animated">
    <bool>true</bool>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'minicraft_ui.ui'
 #
-# Created: Sat Mar  9 21:47:47 2013
+# Created: Mon Mar 11 16:48:43 2013
 #      by: PyQt4 UI code generator 4.9.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -19,7 +19,7 @@ class Ui_MainWindow(object):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
         MainWindow.resize(710, 599)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/main/icon.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/main/icon.ico")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
         MainWindow.setAnimated(True)
         MainWindow.setDocumentMode(False)
