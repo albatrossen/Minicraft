@@ -195,8 +195,8 @@ class SpawnObjectVehicle(Packet):
 	x = Integer()
 	y = Integer()
 	z = Integer()
-	yaw = Byte()
 	pitch = Byte()
+	yaw = Byte()
 	object_data = ObjectData()
 class SpawnMob(Packet):
 	id = 0x18
@@ -502,8 +502,17 @@ class UpdateScore(Packet):
 	id = 0xCF
 	item_name = String()
 	update_remove = Byte()
-	score_name = String()
-	value = Integer()
+	score_name = String() #Conditional
+	value = Integer() #Conditional
+	def setFromRawData(self,stream):
+		self.item_name = self.item_name.decode(stream)
+		self.update_remove = self.update_remove.decode(stream)
+		if mode != 1:
+			self.score_name = self.score_name.decode(stream)
+			self.value = self.value.decode(stream)
+		else:
+			self.score_name = None
+			self.value = None
 class DisplayScoreboard(Packet):
 	id = 0xD0
 	position = Byte()

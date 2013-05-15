@@ -65,7 +65,7 @@ class MineCraftConnection(object):
 		self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.socket.connect((host,port))
 		self.stream = self.socket.makefile("r")		
-		self.send(packets.Handshake(60,self.session.username,host,port))
+		self.send(packets.Handshake(61,self.session.username,host,port))
 
 	def enableEncryption(self):
 		self.transmit_cipher = AES.new(self.shared_key, AES.MODE_CFB, IV=self.shared_key)
@@ -93,6 +93,7 @@ class MineCraftConnection(object):
 				datatype = packets.PacketRegistry.types[id]
 				self.lastmessages.append(datatype.__name__)
 				packet = datatype(raw=self.stream)
+				print(packet)
 				handler = getattr(self,'on'+datatype.__name__,None)
 				if handler:
 					handler(packet)
