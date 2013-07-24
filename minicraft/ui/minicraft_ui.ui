@@ -68,7 +68,7 @@
      </layout>
     </item>
     <item>
-     <widget class="QLineEdit" name="inputbox">
+     <widget class="QHistoryEdit" name="inputbox">
       <property name="maxLength">
        <number>100</number>
       </property>
@@ -82,6 +82,11 @@
    <class>QPlainTextLog</class>
    <extends>QPlainTextEdit</extends>
    <header>qplaintextlog.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QHistoryEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qhistoryedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

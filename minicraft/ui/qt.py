@@ -5,7 +5,7 @@ import ConfigParser
 from PyQt4 import QtCore, QtGui
 import keyring
 
-from minicraft.packets import ChatMessage
+from minicraft.packets import ChatMessage, TabComplete
 from minicraft.protocol import MineCraftConnection, Session, FailedLogin
 from minicraft.ui.minicraft_ui import Ui_MainWindow
 from minicraft.ui.connect import Ui_ConnectWindow
@@ -13,19 +13,36 @@ from minicraft.colorhtml import convert_to_html
 
 class MainWindow(QtGui.QMainWindow):
 	chatmessage = QtCore.pyqtSignal(str)
+	tabcomplete = QtCore.pyqtSignal(str)
+	completeprefix = None
 
 	def __init__(self,parent=None):
 		QtGui.QWidget.__init__(self, parent)
 		self.ui = Ui_MainWindow()
 		self.ui.setupUi(self)
+		self.ui.chatlog.document().setDefaultStyleSheet("a{color:inherit;}")
 	def on_inputbox_returnPressed(self):
 		msg = self.ui.inputbox.text()
 		if msg[:3] == "/p ":
 			self.ui.chatlog.appendPlainText(repr(eval(str(msg[3:]))))
 		else:
 			self.chatmessage.emit(msg)
-			self.ui.inputbox.clear()
-
+	def on_inputbox_tabPressed(self,msg = None):
+		if not self.completeprefix:
+			self.tabcomplete.emit(msg)
+			f = str(msg)
+			i = f.rfind(" ")
+			self.completeprefix = f[:i+1] if i >= 0 else ""
+		#self.ui.inputbox.tab_complete(["/ban","/kick","Faua","OriginalMadman"])
+	def send_tab(self):
+		msg = self.ui.inputbox.text()
+		self.tabcomplete.emit(msg)
+	def on_tab_complete(self,completions):
+		if self.completeprefix is not None:
+		    complete_list = [self.completeprefix + x for x in unicode(completions).split("\0")]
+		    print(complete_list)
+		    self.ui.inputbox.tab_complete(complete_list)
+		self.completeprefix = None
 	def on_player_list_add(self,player):
 		if not self.ui.playerList.findItems(player,QtCore.Qt.MatchExactly):
 			self.ui.playerList.addItem(player)
@@ -45,6 +62,9 @@ class MainWindow(QtGui.QMainWindow):
 		self.connection.chatmessage.connect(self.on_chatmessage)
 		self.connection.player_list_add.connect(self.on_player_list_add)
 		self.connection.player_list_remove.connect(self.on_player_list_remove)
+		self.connection.tabComplete.connect(self.on_tab_complete)
+
+		self.tabcomplete.connect(self.connection.send_tabcomplete)
 		self.chatmessage.connect(self.connection.send_message)
 		self.connection.start()
 
@@ -52,6 +72,7 @@ class LoginWindow(QtGui.QDialog):
 	connecting = False
 	session_ready = QtCore.pyqtSignal(Session,str)
 	config_filename = os.path.join(os.path.dirname(sys.argv[0]),'minicraft.cfg')
+	sound = QtGui.QSound('notify.wav')
 
 	def __init__(self,parent=None):
 		QtGui.QWidget.__init__(self, parent)
@@ -62,7 +83,8 @@ class LoginWindow(QtGui.QDialog):
 		try:
 			username = self.config.get('Minicraft','username')
 			server = self.config.get('Minicraft','server')
-			password = keyring.get_password("Minicraft",username)
+			#password = keyring.get_password("Minicraft",username)
+			password = None
 			self.ui.username.setText(username)
 			self.ui.servername.setText(server)
 			if password:
@@ -80,16 +102,18 @@ class LoginWindow(QtGui.QDialog):
 		self.thread.login_ok.connect(self.login_ok)
 		self.thread.login_fail.connect(self.login_fail)
 		self.thread.start()
-	def login_fail(self, msg):
-		self.ui.status.setText(msg)
-		self.connecting = False
+	def login_fail(self):
+		#QtGui.QSound.play('notify.wav')
+		#self.sound.play()
+		#print("playing sound")
+		pass
 	def login_ok(self,session):
 		server = str(self.ui.servername.text())
 		self.config.set('Minicraft','server',server)
 		self.config.set('Minicraft','username',session.username)
-		keyring.set_password("Minicraft",session.username.encode('utf8'),self.thread.password.encode('utf8'))
+		#keyring.set_password("Minicraft",session.username.encode('utf8'),self.thread.password.encode('utf8'))
 		with open(self.config_filename, 'wb') as configfile:
-		    self.config.write(configfile)
+			self.config.write(configfile)
 		self.close()
 		self.session_ready.emit(session,server)
 		
@@ -119,6 +143,7 @@ class QtConnection(QtCore.QThread,MineCraftConnection):
 	chatmessage = QtCore.pyqtSignal(unicode)
 	player_list_add = QtCore.pyqtSignal(str)
 	player_list_remove = QtCore.pyqtSignal(str)
+	tabComplete = QtCore.pyqtSignal(unicode)
 
 	def run(self):
 		self.recv()
@@ -128,11 +153,16 @@ class QtConnection(QtCore.QThread,MineCraftConnection):
 		self.chatmessage.emit(u"§7Disconnected: §c" + packet.reason)
 	def send_message(self,msg):
 		self.send(ChatMessage(unicode(msg[:100])))
+	def send_tabcomplete(self,msg):
+		self.send(TabComplete(unicode(msg[:100])))		
 	def onPlayerListItem(self,packet):
 		if packet.online:
 			self.player_list_add.emit(packet.player_name)
 		else:
 			self.player_list_remove.emit(packet.player_name)
+	def onTabComplete(self,packet):
+		print(repr(packet.text))
+		self.tabComplete.emit(packet.text)
 
 class QtUI():
 	def run(self,*argv):

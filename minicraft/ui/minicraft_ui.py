@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'minicraft_ui.ui'
 #
-# Created: Mon Mar 11 16:48:43 2013
+# Created: Wed Jun 19 20:27:48 2013
 #      by: PyQt4 UI code generator 4.9.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -50,7 +50,7 @@ class Ui_MainWindow(object):
         self.playerList.setObjectName(_fromUtf8("playerList"))
         self.horizontalLayout.addWidget(self.playerList)
         self.verticalLayout.addLayout(self.horizontalLayout)
-        self.inputbox = QtGui.QLineEdit(self.centralwidget)
+        self.inputbox = QHistoryEdit(self.centralwidget)
         self.inputbox.setMaxLength(100)
         self.inputbox.setObjectName(_fromUtf8("inputbox"))
         self.verticalLayout.addWidget(self.inputbox)
@@ -63,4 +63,5 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "MiniCraft", None, QtGui.QApplication.UnicodeUTF8))
 
 from qplaintextlog import QPlainTextLog
+from qhistoryedit import QHistoryEdit
 import resources_rc
