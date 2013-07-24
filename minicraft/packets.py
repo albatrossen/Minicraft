@@ -507,7 +507,7 @@ class UpdateScore(Packet):
 	def setFromRawData(self,stream):
 		self.item_name = self.item_name.decode(stream)
 		self.update_remove = self.update_remove.decode(stream)
-		if mode != 1:
+		if self.update_remove != 1:
 			self.score_name = self.score_name.decode(stream)
 			self.value = self.value.decode(stream)
 		else:
