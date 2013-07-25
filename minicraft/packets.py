@@ -1,6 +1,7 @@
 from minicraft.datatypes import *
 
 import struct
+import json
 
 def getMRO(cls):
 	return (cls,) + sum(map(getMRO,cls.__bases__),())
@@ -95,7 +96,7 @@ class UseEntity(Packet):
 	mouse_button = Bool()
 class UpdateHealth(Packet):
 	id = 0x08
-	health = Short()
+	health = Float()
 	food = Short()
 	food_saturation = Float()
 class Respawn(Packet):
@@ -144,7 +145,6 @@ class PlayerDigging(Packet):
 
 class PlayerBlockPlacement(Packet):
 	id = 0x0F
-	status = Byte()
 	x = Integer()
 	y = UByte()
 	z = Integer()
@@ -173,6 +173,7 @@ class EntityAction(Packet):
 	id = 0x13
 	entity_id = Integer()
 	action = Byte()
+	jump_boost = Integer()
 class SpawnNamedEntity(Packet):
 	id = 0x14
 	entity_id = Integer()
@@ -228,6 +229,14 @@ class SpawnExperienceOrb(Packet):
 	y = Integer()
 	z = Integer()
 	count = Short()
+
+class SteerVehicle(Packet):
+	id = 0x1B
+	sideways = Float()
+	forward = Float()
+	jump = Bool()
+	unmount = Bool()
+
 class EntityVelocity(Packet):
 	id = 0x1C
 	entity_id = Integer()
@@ -280,6 +289,7 @@ class AttachEntity(Packet):
 	id = 0x27
 	entity_id = Integer()
 	vehicle_id = Integer()
+	leash = UByte()
 class EntityMetadata(Packet):
 	id = 0x28
 	entity_id = Integer()
@@ -299,6 +309,33 @@ class SetExperience(Packet):
 	experience_bar = Float()
 	level = Short()
 	total_experience = Short()
+class EntityProperties(Packet):
+	id = 0x2C
+	entity_id = Integer()
+	properties_count = Integer()
+	key = String() #We need to read a bunch a bunch of these
+	value = Double()
+	list_length = Short()
+	list_element = None
+	def setFromRawData(self,stream):
+		print(">"*5)
+		self.entity_id = self.entity_id.decode(stream)
+		print(self.entity_id)
+		self.properties_count = self.properties_count.decode(stream)
+		print(self.properties_count)
+		self.properties = {}
+		for i in range(self.properties_count):
+			key = self.key.decode(stream)
+			print(key)
+			value = self.value.decode(stream)
+			print(value)
+			self.properties[key] = value
+			list_length = self.list_length.decode(stream)
+			for i in range(list_length):
+				uuid_msb, uuid_lsb, amount, operation  = struct.unpack('!qqdb',stream.read(25))
+		print("<"*5)
+			
+
 class ChunkData(Packet):
 	id = 0x33
 	x = Integer()
@@ -401,6 +438,7 @@ class OpenWindow(Packet):
 	window_title = String()
 	number_of_slots = Byte()
 	use_provided_window_title = Bool()
+	entity_id = Integer()
 class CloseWindow(Packet):
 	id = 0x65
 	window_id = Byte()
@@ -465,10 +503,17 @@ class UpdateTileEntity(Packet):
 	z = Integer()
 	action = Byte()
 	nbt_data = Bytes()
+class TileEditorOpen():
+	id = 0x85
+	tile_entity_id = Byte()
+	x = Integer()
+	y = Integer()
+	z = Integer()
+
 class IncrementStatistic(Packet):
 	id = 0xC8
 	statistic_id = Integer()
-	amount = Byte()
+	amount = Integer()
 
 class PlayerListItem(Packet):
 	id = 0xC9
@@ -478,8 +523,8 @@ class PlayerListItem(Packet):
 class PlayerAbilities(Packet):
 	id = 0xCA
 	flags = Byte()
-	flying_speed = Byte()
-	walking_speed = Byte()
+	flying_speed = Float()
+	walking_speed = Float()
 class TabComplete(Packet):
 	id = 0xCB
 	text = String()

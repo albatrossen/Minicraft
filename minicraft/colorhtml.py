@@ -1,5 +1,6 @@
 # coding=utf8
 import re
+import json
 from itertools import izip
 
 splitter = re.compile(u'§(.)')
@@ -29,9 +30,15 @@ styles = {
 	'o':('<i>','</i>'),
 }
 
+def format_json(string):
+	obj = json.loads(string)
+	if 'text' in obj:
+		return convert_to_html(unicode(obj['text']))
+	return string
+
 def grouped(iterable, n):
-    "s -> (s0,s1,s2,...sn-1), (sn,sn+1,sn+2,...s2n-1), (s2n,s2n+1,s2n+2,...s3n-1), ..."
-    return izip(*[iter(iterable)]*n)
+	"s -> (s0,s1,s2,...sn-1), (sn,sn+1,sn+2,...s2n-1), (s2n,s2n+1,s2n+2,...s3n-1), ..."
+	return izip(*[iter(iterable)]*n)
 
 def escape(string):
 	return string.replace("&","&amp;").replace(">","&gt;").replace("<","&lt;")

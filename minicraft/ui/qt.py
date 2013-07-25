@@ -9,7 +9,7 @@ from minicraft.packets import ChatMessage, TabComplete
 from minicraft.protocol import MineCraftConnection, Session, FailedLogin
 from minicraft.ui.minicraft_ui import Ui_MainWindow
 from minicraft.ui.connect import Ui_ConnectWindow
-from minicraft.colorhtml import convert_to_html
+from minicraft.colorhtml import format_json
 
 class MainWindow(QtGui.QMainWindow):
 	chatmessage = QtCore.pyqtSignal(str)
@@ -54,7 +54,7 @@ class MainWindow(QtGui.QMainWindow):
 				return
 
 	def on_chatmessage(self,msg):
-		self.ui.chatlog.appendHtml(convert_to_html(unicode(msg)))
+		self.ui.chatlog.appendHtml(format_json(unicode(msg)))
 
 	def connect(self, session, host):
 		self.connection=QtConnection()
