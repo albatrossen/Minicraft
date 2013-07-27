@@ -83,13 +83,14 @@ class LoginWindow(QtGui.QDialog):
 		self.config.read(self.config_filename)
 		try:
 			username = self.config.get('Minicraft','username')
-			server = self.config.get('Minicraft','server')
-			#password = keyring.get_password("Minicraft",username)
-			password = None
 			self.ui.username.setText(username)
+			server = self.config.get('Minicraft','server')
 			self.ui.servername.setText(server)
-			if password:
+			try:
+				password = keyring.get_password("Minicraft",username)
 				self.ui.password.setText(password)
+			except:
+				pass
 		except ConfigParser.NoSectionError:
 			self.config.add_section('Minicraft')
 		except ConfigParser.NoOptionError:
@@ -112,7 +113,10 @@ class LoginWindow(QtGui.QDialog):
 		server = str(self.ui.servername.text())
 		self.config.set('Minicraft','server',server)
 		self.config.set('Minicraft','username',session.username)
-		#keyring.set_password("Minicraft",session.username.encode('utf8'),self.thread.password.encode('utf8'))
+		try:
+			keyring.set_password("Minicraft",session.username.encode('utf8'),self.thread.password.encode('utf8'))
+		except:
+			pass
 		with open(self.config_filename, 'wb') as configfile:
 			self.config.write(configfile)
 		self.close()
