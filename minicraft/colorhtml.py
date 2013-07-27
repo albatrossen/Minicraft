@@ -43,6 +43,9 @@ def grouped(iterable, n):
 def escape(string):
 	return string.replace("&","&amp;").replace(">","&gt;").replace("<","&lt;")
 
+def strip_codes(msg):
+	return splitter.sub('',unicode(msg))
+
 def convert_to_html(msg):
 	l = splitter.split(msg)
 	r = [escape(l[0])]

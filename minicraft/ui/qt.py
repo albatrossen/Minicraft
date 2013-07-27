@@ -9,7 +9,7 @@ from minicraft.packets import ChatMessage, TabComplete
 from minicraft.protocol import MineCraftConnection, Session, FailedLogin
 from minicraft.ui.minicraft_ui import Ui_MainWindow
 from minicraft.ui.connect import Ui_ConnectWindow
-from minicraft.colorhtml import format_json
+from minicraft.colorhtml import format_json, strip_codes
 
 class MainWindow(QtGui.QMainWindow):
 	chatmessage = QtCore.pyqtSignal(str)
@@ -33,7 +33,6 @@ class MainWindow(QtGui.QMainWindow):
 			f = str(msg)
 			i = f.rfind(" ")
 			self.completeprefix = f[:i+1] if i >= 0 else ""
-		#self.ui.inputbox.tab_complete(["/ban","/kick","Faua","OriginalMadman"])
 	def send_tab(self):
 		msg = self.ui.inputbox.text()
 		self.tabcomplete.emit(msg)
@@ -44,12 +43,14 @@ class MainWindow(QtGui.QMainWindow):
 		    self.ui.inputbox.tab_complete(complete_list)
 		self.completeprefix = None
 	def on_player_list_add(self,player):
-		if not self.ui.playerList.findItems(player,QtCore.Qt.MatchExactly):
-			self.ui.playerList.addItem(player)
+		stripped_player = strip_codes(player)
+		if not self.ui.playerList.findItems(stripped_player,QtCore.Qt.MatchExactly):
+			self.ui.playerList.addItem(strip_codes(player))
 
 	def on_player_list_remove(self,player):
+		stripped_player = strip_codes(player)
 		for i in range( self.ui.playerList.count() ):
-			if self.ui.playerList.item(i).text() == player:
+			if self.ui.playerList.item(i).text() == stripped_player:
 				self.ui.playerList.takeItem(i)
 				return
 
