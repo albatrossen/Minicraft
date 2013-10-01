@@ -65,7 +65,7 @@ class MineCraftConnection(object):
 		self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.socket.connect((host,port))
 		self.stream = self.socket.makefile("r")		
-		self.send(packets.Handshake(74,self.session.username,host,port))
+		self.send(packets.Handshake(78,self.session.username,host,port))
 
 	def enableEncryption(self):
 		self.transmit_cipher = AES.new(self.shared_key, AES.MODE_CFB, IV=self.shared_key)

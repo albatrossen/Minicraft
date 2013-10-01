@@ -575,7 +575,7 @@ class Teams(Packet):
 	def setFromRawData(self,stream):
 		self.team_name = self.team_name.decode(stream)
 		self.mode = self.mode.decode(stream)
-		if mode == 0 or mode == 2:
+		if self.mode == 0 or self.mode == 2:
 			self.team_display_name = self.team_display_name.decode(stream)
 			self.team_prefix = self.team_prefix.decode(stream)
 			self.team_suffix = self.team_suffix.decode(stream)
@@ -585,8 +585,8 @@ class Teams(Packet):
 			self.team_prefix = None
 			self.team_suffix = None
 			self.friendly_fire = None
-		if mode == 0 or mode == 3 or mode == 4:
-			self.player_count = player_count.decode(stream)
+		if self.mode == 0 or self.mode == 3 or self.mode == 4:
+			self.player_count = self.player_count.decode(stream)
 			s=String()
 			self.players = [s.decode(stream) for i in range(self.player_count)]
 
