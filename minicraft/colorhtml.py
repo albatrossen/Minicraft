@@ -31,10 +31,13 @@ styles = {
 }
 
 def format_json(string):
-	obj = json.loads(string)
-	if 'text' in obj:
-		return convert_to_html(unicode(obj['text']))
-	return string
+	try:
+		obj = json.loads(string)
+		if 'text' in obj:
+			return convert_to_html(unicode(obj['text']))
+	except ValueError:
+		pass
+	return convert_to_html(string)
 
 def grouped(iterable, n):
 	"s -> (s0,s1,s2,...sn-1), (sn,sn+1,sn+2,...s2n-1), (s2n,s2n+1,s2n+2,...s3n-1), ..."
