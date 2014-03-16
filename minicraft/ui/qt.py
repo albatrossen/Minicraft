@@ -5,7 +5,7 @@ import ConfigParser
 from PyQt4 import QtCore, QtGui
 import keyring
 
-from minicraft.packets import ChatMessage, TabComplete
+from minicraft.packets import TransmitChatMessage, TabComplete
 from minicraft.protocol import MineCraftConnection, Session, FailedLogin
 from minicraft.ui.minicraft_ui import Ui_MainWindow
 from minicraft.ui.connect import Ui_ConnectWindow
@@ -38,9 +38,9 @@ class MainWindow(QtGui.QMainWindow):
 		self.tabcomplete.emit(msg)
 	def on_tab_complete(self,completions):
 		if self.completeprefix is not None:
-		    complete_list = [self.completeprefix + x for x in unicode(completions).split("\0")]
-		    print(complete_list)
-		    self.ui.inputbox.tab_complete(complete_list)
+			complete_list = [self.completeprefix + x for x in unicode(completions).split("\0")]
+			print(complete_list)
+			self.ui.inputbox.tab_complete(complete_list)
 		self.completeprefix = None
 	def on_player_list_add(self,player):
 		stripped_player = strip_codes(player)
@@ -55,6 +55,7 @@ class MainWindow(QtGui.QMainWindow):
 				return
 
 	def on_chatmessage(self,msg):
+		print('Got chat!: ' + msg)
 		self.ui.chatlog.appendHtml(format_json(unicode(msg)))
 
 	def connect(self, session, host):
@@ -157,17 +158,16 @@ class QtConnection(QtCore.QThread,MineCraftConnection):
 	def onDisconnect(self,packet):
 		self.chatmessage.emit(u"§7Disconnected: §c" + packet.reason)
 	def send_message(self,msg):
-		self.send(ChatMessage(unicode(msg[:100])))
+		self.send(TransmitChatMessage(unicode(msg[:100])))
 	def send_tabcomplete(self,msg):
-		self.send(TabComplete(unicode(msg[:100])))		
+		self.send(TransmitTabComplete(unicode(msg[:100])))		
 	def onPlayerListItem(self,packet):
 		if packet.online:
 			self.player_list_add.emit(packet.player_name)
 		else:
 			self.player_list_remove.emit(packet.player_name)
 	def onTabComplete(self,packet):
-		print(repr(packet.text))
-		self.tabComplete.emit(packet.text)
+		self.tabComplete.emit('\x00'.join(packet.completions))
 
 class QtUI():
 	def run(self,*argv):

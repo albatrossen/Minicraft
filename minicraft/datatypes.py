@@ -168,19 +168,45 @@ class Slots(Slot):
 	def default(self):
 		return b''
 
+class Varint(DataType):
+	@classmethod
+	def encode(cls,buffer,index,value):
+		shifted_value = True
+		bytes_written = 0
+		while shifted_value:
+			shifted_value = value >> 7
+			buffer[index] = (chr((value & 0x7F) | (0x80 if shifted_value != 0 else 0x00)))
+			value = shifted_value
+			index += 1
+			bytes_written += 1
+		return bytes_written
+
+	@classmethod
+	def decode(cls,stream):
+		value, shift, quantum = 0, 0, 0x80
+		while (quantum & 0x80) == 0x80:
+			quantum = ord(stream.read(1))
+			value, shift = value + ((quantum & 0x7F) << shift), shift + 7
+		return value
+
+	def default(self):
+		return 0
+
 class String(DataType):
 	def encode(cls,buffer,index,value):
-		encoded = value.encode('utf-16-be')
-		struct.pack_into('!h',buffer,index,len(value))
-		buffer[index+2:index+2+len(encoded)] = encoded
-		return 2+ len(encoded)
+		encoded = value.encode('utf-8')
+		varint_size = Varint.encode(buffer,index,len(encoded))
+		index += varint_size
+		buffer[index:index+len(encoded)] = encoded
+		return varint_size + len(encoded)
 	def decode(cls,stream):
-		length = struct.unpack('!h',stream.read(2))[0]*2
+		length = Varint.decode(stream)
 		encoded = stream.read(length)
-		decoded = encoded.decode('utf-16-be')
+		decoded = encoded.decode('utf-8')
 		return decoded
 	def default(self):
 		return ''
+
 
 class Metadata(Slot):
 	types = {
