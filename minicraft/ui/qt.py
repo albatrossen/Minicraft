@@ -55,7 +55,7 @@ class MainWindow(QtGui.QMainWindow):
 				return
 
 	def on_chatmessage(self,msg):
-		print('Got chat!: ' + msg)
+		print('Got chat!: ' + unicode(msg).encode('utf-8'))
 		self.ui.chatlog.appendHtml(format_json(unicode(msg)))
 
 	def connect(self, session, host):
