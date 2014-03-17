@@ -506,7 +506,7 @@ class TabComplete(ReceivePacket):
 	completions = []
 	def setFromRawData(self,stream):
 		self.count = self.count.decode(stream)
-		self.completions = [self.completion.decode(stream) for x in range(x)]
+		self.completions = [self.completion.decode(stream) for x in range(self.count)]
 
 class ScoreboardObjective(ReceivePacket):
 	id = 0x3B

@@ -5,7 +5,7 @@ import ConfigParser
 from PyQt4 import QtCore, QtGui
 import keyring
 
-from minicraft.packets import TransmitChatMessage, TabComplete
+from minicraft.packets import TransmitChatMessage, TransmitTabComplete
 from minicraft.protocol import MineCraftConnection, Session, FailedLogin
 from minicraft.ui.minicraft_ui import Ui_MainWindow
 from minicraft.ui.connect import Ui_ConnectWindow
