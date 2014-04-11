@@ -14,6 +14,8 @@ import datatypes
 
 import binascii
 
+import json
+
 def javaHexDigest(digest):
 	d = long(digest.hexdigest(), 16)
 	if d >> 39 * 4 & 0x8:
@@ -27,17 +29,23 @@ class FailedLogin(Exception):
 
 class Session(object):
 	def login(self,username,password):
-		url = 'https://login.minecraft.net'
-		headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+		url = 'https://authserver.mojang.com/authenticate'
+		headers = {'Content-Type': 'application/json'}
 		parameters = {
-			'user': username,
-			'password': password,
-			'version': '13'
+			"agent": {
+				"name": "Minecraft",
+				"version": 1
+			},
+			"username": username,
+			"password": password
 		}
-		data = urllib.urlencode(parameters)
-		result = urllib2.urlopen(url,data).read()
+		data = json.dumps(parameters)
+		result = json.loads(urllib2.urlopen(urllib2.Request(url,headers=headers),data).read())
 		try:
-			timestamp,downloadticket,self.username,self.session_id,self.uid = result.split(":")
+			self.username = result[u'selectedProfile'][u'name']
+			self.access_token = result[u'accessToken']
+			self.client_token = result[u'clientToken']
+			self.uid = result[u'selectedProfile'][u'id']
 		except ValueError:
 			raise FailedLogin(result)
 
@@ -128,14 +136,13 @@ class MineCraftConnection(object):
 		hash.update(self.shared_key)
 		hash.update(packet.public_key)
 		parameters = {
-			'user':self.session.username,
-			'sessionId':self.session.session_id,
+			'accessToken':self.session.access_token,
+			'selectedProfile':self.session.uid,
 			'serverId':javaHexDigest(hash),
 		}
-		url = 'http://session.minecraft.net/game/joinserver.jsp?' + urllib.urlencode(parameters)
-		result = urllib2.urlopen(url).read()
-		if result != "OK":
-			print("Unexpected Result: " + result)
+		url = 'https://sessionserver.mojang.com/session/minecraft/join'
+		request = urllib2.Request(url,data=json.dumps(parameters),headers={'Content-Type': 'application/json'})
+		result = urllib2.urlopen(request).read()
 		self.RSACipher = PKCS1_v1_5.new(self.pubkey)
 		encrypted_verify_token = self.RSACipher.encrypt(packet.verify_token)
 		encrypted_shared_key = self.RSACipher.encrypt(self.shared_key)
